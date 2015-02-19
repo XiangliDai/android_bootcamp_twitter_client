@@ -12,16 +12,29 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="New Text"
         android:id="@+id/tvUserName"
-    
-        android:layout_toRightOf="@+id/ivImage"/>
+        android:layout_toRightOf="@+id/ivImage"
+        android:paddingRight="2dp"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/tvScreeName"
+        android:layout_toRightOf="@+id/tvUserName"
+        android:layout_toLeftOf="@+id/tvCreatedTime"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/tvBody"
+        android:layout_below="@id/tvUserName"
+        android:layout_toRightOf="@+id/ivImage"
+        android:layout_toLeftOf="@+id/tvCreatedTime"/>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="New Text"
-        android:id="@+id/tvBody"
-        android:layout_below="@id/tvUserName"
-        android:layout_toRightOf="@+id/ivImage"/>
+        android:id="@+id/tvCreatedTime"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+/>
 </RelativeLayout>

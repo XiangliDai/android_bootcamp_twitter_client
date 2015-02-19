@@ -22,6 +22,8 @@ public class TweetAdapter extends ArrayAdapter<Tweet> {
         public ImageView ivImage;
         public TextView tvUserName;
         public TextView tvBody;
+        public TextView tvCreatedTime;
+        public TextView tvScreenName;
     }
 
     public TweetAdapter(Context context, List<Tweet> tweets) {
@@ -40,14 +42,18 @@ public class TweetAdapter extends ArrayAdapter<Tweet> {
             viewHolder.ivImage = (ImageView)convertView.findViewById(R.id.ivImage);
             viewHolder.tvBody = (TextView)convertView.findViewById(R.id.tvBody);
             viewHolder.tvUserName = (TextView)convertView.findViewById(R.id.tvUserName);
+            viewHolder.tvCreatedTime = (TextView)convertView.findViewById(R.id.tvCreatedTime);
+            viewHolder.tvScreenName = (TextView)convertView.findViewById(R.id.tvScreeName);
             convertView.setTag(viewHolder);
+            
         } else {
             viewHolder = (ViewHolder) convertView.getTag();
         }
 
         viewHolder.tvBody.setText(Html.fromHtml(tweet.getBody()));
-        viewHolder.tvUserName.setText(tweet.getUser().getScreenName());
-
+        viewHolder.tvUserName.setText(tweet.getUser().getName());
+        viewHolder.tvScreenName.setText("@" + tweet.getUser().getScreenName());
+        viewHolder.tvCreatedTime.setText(tweet.getCreatedAt());
 
         viewHolder.ivImage.setImageResource(0);
 

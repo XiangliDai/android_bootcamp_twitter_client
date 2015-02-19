@@ -1,5 +1,7 @@
 package com.codepath.apps.mysimpletweets.models;
 
+import com.codepath.apps.mysimpletweets.Utils;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -37,7 +39,7 @@ public class Tweet {
         try {
             tweet.body = jsonObject.has("text") ? jsonObject.getString("text") : "";
             tweet.uid = jsonObject.has("id") ? jsonObject.getLong("id") : 0;
-            tweet.createdAt = jsonObject.has("created_at") ? jsonObject.getString("created_at") : "";
+            tweet.createdAt = jsonObject.has("created_at") ? Utils.getRelativeTimeAgo(jsonObject.getString("created_at")) : "";
             tweet.user = jsonObject.has("user")? User.fromJson(jsonObject.getJSONObject("user")): null;
         } catch (JSONException e) {
             e.printStackTrace();
