@@ -27,7 +27,9 @@
         android:id="@+id/tvBody"
         android:layout_below="@id/tvUserName"
         android:layout_toRightOf="@+id/ivImage"
-        android:layout_toLeftOf="@+id/tvCreatedTime"/>
+        android:layout_toLeftOf="@+id/tvCreatedTime"
+        android:autoLink="all"
+        android:linksClickable="true"/>
 
     <TextView
         android:layout_width="wrap_content"
