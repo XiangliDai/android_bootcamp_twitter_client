@@ -1,46 +1,40 @@
 package com.codepath.apps.mysimpletweets.models;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class User {
+public class User implements Parcelable {
     private String name;
     private Long uid;
     private String screenName;
 
-    public String getName() {
-        return name;
+    private String profileImageUrl;
+
+    public User(){}
+    public User(Parcel in) {
+        name = in.readString();
+        screenName = in.readString();
+        profileImageUrl = in.readString();
+        uid = in.readLong();
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public String getName() {
+        return name;
     }
 
     public Long getUid() {
         return uid;
     }
 
-    public void setUid(Long uid) {
-        this.uid = uid;
-    }
-
     public String getScreenName() {
         return screenName;
     }
-
-    public void setScreenName(String screenName) {
-        this.screenName = screenName;
-    }
-
     public String getProfileImageUrl() {
         return profileImageUrl;
     }
-
-    public void setProfileImageUrl(String profileImageUrl) {
-        this.profileImageUrl = profileImageUrl;
-    }
-
-    private String profileImageUrl;
 
 
     public static User fromJson(JSONObject jsonObject) {
@@ -56,4 +50,26 @@ public class User {
         }
         return user;
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int i) {
+        dest.writeString(name);
+        dest.writeString(screenName);
+        dest.writeString(profileImageUrl);
+        dest.writeLong(uid);
+    }
+    
+    public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {
+        public User createFromParcel(Parcel in) {
+            return new User(in);
+        }
+        public User[] newArray(int size) {
+            return new User[size];
+        }
+    };
 }

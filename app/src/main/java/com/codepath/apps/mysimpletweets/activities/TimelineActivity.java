@@ -16,6 +16,7 @@ import com.codepath.apps.mysimpletweets.R;
 import com.codepath.apps.mysimpletweets.TwitterApplication;
 import com.codepath.apps.mysimpletweets.adapters.TweetAdapter;
 import com.codepath.apps.mysimpletweets.models.Tweet;
+import com.codepath.apps.mysimpletweets.models.User;
 import com.loopj.android.http.JsonHttpResponseHandler;
 
 import org.apache.http.Header;
@@ -66,6 +67,42 @@ public class TimelineActivity extends ActionBarActivity {
                 android.R.color.holo_red_light);
 
         getNewerTimeline();
+        if(TwitterApplication.getCurrentUser().getUser()== null) {
+            getCurrentUser();
+        }
+    }
+
+    private void getCurrentUser() {
+        TwitterApplication.getRestClient().getCurrentUserInformation(new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
+                if (response != null && response.length() > 0) {
+                    try {
+                        User user = User.fromJson(response.getJSONObject(0));
+                        TwitterApplication.getCurrentUser().setUser(user);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                   
+                }
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                Log.e(TAG, "failed " + statusCode);
+                //Toast.makeText(TAG, errorResponse.)
+                try {
+                    JSONArray errors = errorResponse.getJSONArray("errors");
+                    for (int i = 0; i < errors.length(); i++) {
+                        JSONObject error = errors.getJSONObject(i);
+                        String errorMessage = error.getString("message");
+                        Toast.makeText(TimelineActivity.this, errorMessage, Toast.LENGTH_SHORT).show();
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 
     private void getNewerTimeline() {
@@ -152,6 +189,12 @@ public class TimelineActivity extends ActionBarActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         // Check which request we're responding to
         if (requestCode == REQUEST_CODE  && resultCode == RESULT_OK) {
+            Tweet tweet = data.getParcelableExtra("tweet");
+            if(tweet != null ){
+                if(tweetList == null) tweetList = new ArrayList<>();
+                tweetList.add(0 ,tweet);
+                tweetAdapter.notifyDataSetChanged();
+            }
         }
     }
 }
