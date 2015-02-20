@@ -1,8 +1,10 @@
 package com.codepath.apps.mysimpletweets.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -26,6 +28,7 @@ import java.util.List;
 
 public class TimelineActivity extends ActionBarActivity {
     private static final String TAG = TimelineActivity.class.getSimpleName();
+    private static final int REQUEST_CODE = 10;
     private ListView lvList;
     private List<Tweet> tweetList;
     private SwipeRefreshLayout swipeContainer;
@@ -35,6 +38,8 @@ public class TimelineActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_timeline);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
         lvList = (ListView) findViewById(R.id.lvList);
         tweetList = new ArrayList<>();
         tweetAdapter = new TweetAdapter(this, tweetList);
@@ -115,6 +120,7 @@ public class TimelineActivity extends ActionBarActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
+        
         getMenuInflater().inflate(R.menu.menu_timeline, menu);
         return true;
     }
@@ -127,10 +133,25 @@ public class TimelineActivity extends ActionBarActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.action_compose) {
+            launchComposer();
             return true;
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void launchComposer() {
+        Intent intent = new Intent(this, ComposeActivity.class);
+        
+        startActivityForResult(intent, REQUEST_CODE);
+
+    }
+    
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        // Check which request we're responding to
+        if (requestCode == REQUEST_CODE  && resultCode == RESULT_OK) {
+        }
     }
 }
