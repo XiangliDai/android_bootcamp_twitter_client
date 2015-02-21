@@ -4,24 +4,20 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.codepath.apps.mysimpletweets.R;
 import com.codepath.apps.mysimpletweets.TwitterApplication;
+import com.codepath.apps.mysimpletweets.TwitterJsonHttpResponseHandler;
 import com.codepath.apps.mysimpletweets.models.Tweet;
 import com.codepath.apps.mysimpletweets.models.User;
-import com.loopj.android.http.JsonHttpResponseHandler;
 import com.squareup.picasso.Picasso;
 
 import org.apache.http.Header;
-import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 public class ComposeActivity extends ActionBarActivity {
@@ -73,7 +69,7 @@ public class ComposeActivity extends ActionBarActivity {
     }
 
     private void postTweet() {
-        TwitterApplication.getRestClient().postStatus(editText.getText().toString(), new JsonHttpResponseHandler() {
+        TwitterApplication.getRestClient().postStatus(editText.getText().toString(), new TwitterJsonHttpResponseHandler(this) {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 if (response != null && response.length() > 0) {
@@ -82,23 +78,6 @@ public class ComposeActivity extends ActionBarActivity {
                     returnIntent.putExtra("tweet", tweet);
                     setResult(RESULT_OK, returnIntent);
                     finish();
-                }
-            }
-
-            @Override
-            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject
-                    errorResponse) {
-                Log.e(ComposeActivity.class.getSimpleName(), "failed " + statusCode);
-                //Toast.makeText(TAG, errorResponse.)
-                try {
-                    JSONArray errors = errorResponse.getJSONArray("errors");
-
-                    JSONObject error = errors.getJSONObject(0);
-                    String errorMessage = error.getString("message");
-                    Toast.makeText(ComposeActivity.this, errorMessage, Toast.LENGTH_SHORT).show();
-
-                } catch (JSONException e) {
-                    e.printStackTrace();
                 }
             }
         });

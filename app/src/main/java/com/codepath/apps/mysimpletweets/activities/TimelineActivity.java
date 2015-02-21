@@ -5,15 +5,14 @@ import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import com.codepath.apps.mysimpletweets.EndlessScrollListener;
 import com.codepath.apps.mysimpletweets.R;
 import com.codepath.apps.mysimpletweets.TwitterApplication;
+import com.codepath.apps.mysimpletweets.TwitterJsonHttpResponseHandler;
 import com.codepath.apps.mysimpletweets.adapters.TweetAdapter;
 import com.codepath.apps.mysimpletweets.models.Tweet;
 import com.codepath.apps.mysimpletweets.models.User;
@@ -22,7 +21,6 @@ import com.loopj.android.http.JsonHttpResponseHandler;
 import org.apache.http.Header;
 import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -73,7 +71,7 @@ public class TimelineActivity extends ActionBarActivity {
     }
 
     private void getCurrentUser() {
-        TwitterApplication.getRestClient().getCurrentUserInformation(new JsonHttpResponseHandler() {
+        TwitterApplication.getRestClient().getCurrentUserInformation(new TwitterJsonHttpResponseHandler(this) {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
                 if (response != null && response.length() > 0) {
@@ -84,22 +82,6 @@ public class TimelineActivity extends ActionBarActivity {
                         e.printStackTrace();
                     }
                    
-                }
-            }
-
-            @Override
-            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                Log.e(TAG, "failed " + statusCode);
-                //Toast.makeText(TAG, errorResponse.)
-                try {
-                    JSONArray errors = errorResponse.getJSONArray("errors");
-                    for (int i = 0; i < errors.length(); i++) {
-                        JSONObject error = errors.getJSONObject(i);
-                        String errorMessage = error.getString("message");
-                        Toast.makeText(TimelineActivity.this, errorMessage, Toast.LENGTH_SHORT).show();
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
                 }
             }
         });
@@ -124,7 +106,7 @@ public class TimelineActivity extends ActionBarActivity {
     }
 
     private JsonHttpResponseHandler getJsonHttpResponseHandler() {
-        return new JsonHttpResponseHandler() {
+        return new TwitterJsonHttpResponseHandler(this) {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
                 if (swipeContainer.isRefreshing()) {
@@ -133,22 +115,6 @@ public class TimelineActivity extends ActionBarActivity {
                 if (response != null && response.length() > 0) {
                     tweetList.addAll(Tweet.fromJsonArray(response));
                     tweetAdapter.notifyDataSetChanged();
-                }
-            }
-
-            @Override
-            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                Log.e(TAG, "failed " + statusCode);
-                //Toast.makeText(TAG, errorResponse.)
-                try {
-                    JSONArray errors = errorResponse.getJSONArray("errors");
-                    for (int i = 0; i < errors.length(); i++) {
-                        JSONObject error = errors.getJSONObject(i);
-                        String errorMessage = error.getString("message");
-                        Toast.makeText(TimelineActivity.this, errorMessage, Toast.LENGTH_SHORT).show();
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
                 }
             }
         };
