@@ -24,6 +24,8 @@ public class TweetAdapter extends ArrayAdapter<Tweet> {
         public TextView tvBody;
         public TextView tvCreatedTime;
         public TextView tvScreenName;
+        public TextView tvRetweets;
+        public TextView tvlikes;
     }
 
     public TweetAdapter(Context context, List<Tweet> tweets) {
@@ -44,6 +46,8 @@ public class TweetAdapter extends ArrayAdapter<Tweet> {
             viewHolder.tvUserName = (TextView)convertView.findViewById(R.id.tvUserName);
             viewHolder.tvCreatedTime = (TextView)convertView.findViewById(R.id.tvCreatedTime);
             viewHolder.tvScreenName = (TextView)convertView.findViewById(R.id.tvScreeName);
+            viewHolder.tvlikes = (TextView)convertView.findViewById(R.id.tvlikes);
+            viewHolder.tvRetweets = (TextView)convertView.findViewById(R.id.tvRetweets);
             convertView.setTag(viewHolder);
             
         } else {
@@ -54,7 +58,13 @@ public class TweetAdapter extends ArrayAdapter<Tweet> {
         viewHolder.tvUserName.setText(tweet.getUser().getName());
         viewHolder.tvScreenName.setText("@" + tweet.getUser().getScreenName());
         viewHolder.tvCreatedTime.setText(tweet.getCreatedAt());
-
+        if(tweet.getFavouritesCount() > 0) {
+            viewHolder.tvlikes.setText(tweet.getFavouritesCount() + "");
+        }
+        
+        if(tweet.getRetweetCount() > 0) {
+            viewHolder.tvRetweets.setText(tweet.getRetweetCount() + "");
+        }
         viewHolder.ivImage.setImageResource(0);
 
         Picasso.with(getContext())

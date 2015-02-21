@@ -17,7 +17,9 @@ public class Tweet implements Parcelable{
     private long uid;
     private String createdAt;
     private User user;
-    
+
+    private int favouritesCount;
+   private int retweetCount;
     public User getUser() {
         return user;
     }
@@ -31,6 +33,14 @@ public class Tweet implements Parcelable{
     }
 
 
+    public int getFavouritesCount() {
+        return favouritesCount;
+    }
+
+    public int getRetweetCount() {
+        return retweetCount;
+    }
+
     public String getCreatedAt() {
         return createdAt;
     }
@@ -41,7 +51,9 @@ public class Tweet implements Parcelable{
         try {
             tweet.body = jsonObject.has("text") ? jsonObject.getString("text") : "";
             tweet.uid = jsonObject.has("id") ? jsonObject.getLong("id") : 0;
-            tweet.createdAt = jsonObject.has("created_at") ? Utils.getRelativeTimeAgo(jsonObject.getString("created_at")) : "";
+            tweet.createdAt = jsonObject.has("created_at") ? Utils.getRelativeTimeString(jsonObject.getString("created_at")) : "";
+            tweet.retweetCount = jsonObject.has("retweet_count") ? jsonObject.getInt("retweet_count") : 0;
+            tweet.favouritesCount = jsonObject.has("favourites_count") ? jsonObject.getInt("favourites_count") : 0;
             tweet.user = jsonObject.has("user")? User.fromJson(jsonObject.getJSONObject("user")): null;
         } catch (JSONException e) {
             e.printStackTrace();
@@ -80,6 +92,8 @@ public class Tweet implements Parcelable{
         dest.writeLong(uid);
         dest.writeString(createdAt);
         dest.writeString(body);
+        dest.writeInt(retweetCount);
+        dest.writeInt(favouritesCount);
         dest.writeParcelable(user, i);
     }
 
@@ -87,6 +101,8 @@ public class Tweet implements Parcelable{
         uid = in.readLong();
         createdAt = in.readString();
         body = in.readString();
+        retweetCount = in.readInt();
+        favouritesCount = in.readInt();
         user = in.readParcelable(User.class.getClassLoader());
     }
 
