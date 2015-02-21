@@ -37,7 +37,8 @@
             android:textColor="@color/secondary_darkest"
             android:textSize="14sp"
             android:textStyle="bold"
-            android:layout_below="@+id/tvRetweeted"/>
+            android:layout_below="@+id/tvRetweeted"
+            android:layout_marginRight="@dimen/activity_small_margin"/>
 
         <TextView
             android:id="@+id/tvScreeName"
