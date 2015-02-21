@@ -26,6 +26,7 @@ public class TweetAdapter extends ArrayAdapter<Tweet> {
         public TextView tvScreenName;
         public TextView tvRetweets;
         public TextView tvlikes;
+        public TextView tvRetweeted;
     }
 
     public TweetAdapter(Context context, List<Tweet> tweets) {
@@ -48,6 +49,7 @@ public class TweetAdapter extends ArrayAdapter<Tweet> {
             viewHolder.tvScreenName = (TextView)convertView.findViewById(R.id.tvScreeName);
             viewHolder.tvlikes = (TextView)convertView.findViewById(R.id.tvlikes);
             viewHolder.tvRetweets = (TextView)convertView.findViewById(R.id.tvRetweets);
+            viewHolder.tvRetweeted = (TextView)convertView.findViewById(R.id.tvRetweeted);
             convertView.setTag(viewHolder);
             
         } else {
@@ -58,6 +60,16 @@ public class TweetAdapter extends ArrayAdapter<Tweet> {
         viewHolder.tvUserName.setText(tweet.getUser().getName());
         viewHolder.tvScreenName.setText("@" + tweet.getUser().getScreenName());
         viewHolder.tvCreatedTime.setText(tweet.getCreatedAt());
+        if(tweet.getRetweenName() != null && !tweet.getRetweenName().isEmpty()){
+            viewHolder.tvRetweeted.setText(tweet.getRetweenName() + " retweeted");
+            viewHolder.tvRetweeted.setVisibility(View.VISIBLE);
+        
+           
+        }
+        else { 
+            viewHolder.tvRetweeted.setVisibility(View.GONE);
+
+        }
         if(tweet.getFavouritesCount() > 0) {
             viewHolder.tvlikes.setText(tweet.getFavouritesCount() + "");
         }

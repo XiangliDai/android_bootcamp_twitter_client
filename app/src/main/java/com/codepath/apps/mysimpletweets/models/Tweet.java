@@ -10,6 +10,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.regex.Pattern;
 
 public class Tweet implements Parcelable{
 
@@ -20,6 +21,7 @@ public class Tweet implements Parcelable{
 
     private int favouritesCount;
    private int retweetCount;
+    private String retweenName;
     public User getUser() {
         return user;
     }
@@ -45,16 +47,33 @@ public class Tweet implements Parcelable{
         return createdAt;
     }
 
+    public String getRetweenName() {
+        return retweenName;
+    }
+
     public Tweet (){}
     public static Tweet fromJson(JSONObject jsonObject) {
         Tweet tweet = new Tweet();
         try {
             tweet.body = jsonObject.has("text") ? jsonObject.getString("text") : "";
             tweet.uid = jsonObject.has("id") ? jsonObject.getLong("id") : 0;
-            tweet.createdAt = jsonObject.has("created_at") ? Utils.getRelativeTimeString(jsonObject.getString("created_at")) : "";
+           
             tweet.retweetCount = jsonObject.has("retweet_count") ? jsonObject.getInt("retweet_count") : 0;
             tweet.favouritesCount = jsonObject.has("favourites_count") ? jsonObject.getInt("favourites_count") : 0;
-            tweet.user = jsonObject.has("user")? User.fromJson(jsonObject.getJSONObject("user")): null;
+            User tUser = jsonObject.has("user") ? User.fromJson(jsonObject.getJSONObject("user")) : null;
+            if(jsonObject.has("retweeted_status")) {
+                JSONObject retweetJson = jsonObject.getJSONObject("retweeted_status");
+                tweet.createdAt = retweetJson.has("created_at") ? Utils.getRelativeTimeString(retweetJson.getString("created_at")) : "";
+                tweet.user = retweetJson.has("user") ? User.fromJson(retweetJson.getJSONObject("user")) : null;              
+                tweet.retweenName =  tUser == null ? "" : tUser.getName();
+                String regex = "RT @" + tweet.user.getScreenName() + ": " ;
+                tweet.body = Pattern.compile(regex).matcher(tweet.body).replaceFirst("");
+            }
+            else{
+                tweet.createdAt = jsonObject.has("created_at") ? Utils.getRelativeTimeString(jsonObject.getString("created_at")) : "";
+                tweet.user =  tUser ;
+            }
+                
         } catch (JSONException e) {
             e.printStackTrace();
             return null;
@@ -94,6 +113,7 @@ public class Tweet implements Parcelable{
         dest.writeString(body);
         dest.writeInt(retweetCount);
         dest.writeInt(favouritesCount);
+        dest.writeString(retweenName);
         dest.writeParcelable(user, i);
     }
 
@@ -103,6 +123,7 @@ public class Tweet implements Parcelable{
         body = in.readString();
         retweetCount = in.readInt();
         favouritesCount = in.readInt();
+        retweenName = in.readString();
         user = in.readParcelable(User.class.getClassLoader());
     }
 
