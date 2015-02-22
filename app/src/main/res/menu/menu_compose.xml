@@ -3,6 +3,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.codepath.apps.mysimpletweets.activities.ComposeActivity"> 
     <item android:id="@+id/action_tweet" android:title="@string/action_tweet"
-    android:orderInCategory="100" app:showAsAction="always" android:icon="@drawable/compose" />
+    android:orderInCategory="100" app:showAsAction="always" android:icon="@drawable/paper16" />
 
 </menu>

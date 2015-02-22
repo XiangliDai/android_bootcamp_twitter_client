@@ -39,6 +39,11 @@ public class TimelineActivity extends ActionBarActivity {
         setContentView(R.layout.activity_timeline);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        toolbar.setLogo(R.mipmap.ic_launcher);
+        
+        getSupportActionBar().setTitle(getString(R.string.title_activity_timeline));
+        toolbar.setTitleTextColor(getResources().getColor(R.color.white));
         lvList = (ListView) findViewById(R.id.lvList);
         tweetList = new ArrayList<>();
         tweetAdapter = new TweetAdapter(this, tweetList);

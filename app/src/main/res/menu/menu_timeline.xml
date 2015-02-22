@@ -3,5 +3,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.codepath.apps.mysimpletweets.activities.TimelineActivity">
     <item android:id="@+id/action_compose" android:title="@string/action_compose"
-        android:orderInCategory="100" app:showAsAction="always" android:icon="@drawable/compose" />
+
+        android:orderInCategory="5" app:showAsAction="always" android:icon="@drawable/pencil" />
 </menu>

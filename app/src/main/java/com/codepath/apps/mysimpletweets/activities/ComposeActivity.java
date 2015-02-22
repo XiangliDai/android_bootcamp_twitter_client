@@ -6,6 +6,7 @@ import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -32,6 +33,15 @@ public class ComposeActivity extends ActionBarActivity {
         setContentView(R.layout.activity_compose);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        toolbar.setLogo(R.mipmap.ic_launcher);
+        getSupportActionBar().setTitle("");
+        toolbar.setNavigationIcon(R.drawable.chevron16);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
         editText = (EditText) findViewById(R.id.etBody);
         ivProfile = (ImageView) findViewById(R.id.ivProfile);
         tvUserName = (TextView) findViewById(R.id.tvUserName);
