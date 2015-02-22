@@ -8,7 +8,6 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -36,22 +35,20 @@ public class ComposeActivity extends ActionBarActivity {
         setContentView(R.layout.activity_compose);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar_text = (TextView)toolbar.findViewById(R.id.toolbar_text);
+        
         setSupportActionBar(toolbar);
+        android.support.v7.app.ActionBar actionBar = getSupportActionBar();
+
         toolbar.setLogo(R.mipmap.ic_launcher);
-        getSupportActionBar().setTitle("");
-        toolbar.setNavigationIcon(R.drawable.chevron16);
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finish();
-            }
-        });
+        actionBar.setTitle("");
+        actionBar.setDisplayHomeAsUpEnabled(true);
+        actionBar.setDefaultDisplayHomeAsUpEnabled(true);
+
         editText = (EditText) findViewById(R.id.etBody);
         editText.addTextChangedListener(new TextWatcher() {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 // Fires right as the text is being changed (even supplies the range of text)
-                //toolbar_text.setText((140 - count) + "");
             }
 
             @Override
@@ -70,11 +67,12 @@ public class ComposeActivity extends ActionBarActivity {
         tvUserName = (TextView) findViewById(R.id.tvUserName);
         tvScreeName = (TextView) findViewById(R.id.tvScreeName);
         User currentUser = TwitterApplication.getCurrentUser().getUser();
-        Picasso.with(this).load(currentUser.getProfileImageUrl()).into(ivProfile);
+        if(currentUser!= null) {
+            Picasso.with(this).load(currentUser.getProfileImageUrl()).into(ivProfile);
 
-        tvScreeName.setText("@" + currentUser.getScreenName());
-        tvUserName.setText(currentUser.getName());
-
+            tvScreeName.setText("@" + currentUser.getScreenName());
+            tvUserName.setText(currentUser.getName());
+        }
     }
 
 
