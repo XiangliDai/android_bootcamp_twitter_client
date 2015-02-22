@@ -2,18 +2,26 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
+    android:background="@color/white"
     tools:context=".LoginActivity" >
 
     <Button
-        android:layout_width="match_parent"
+        android:background="@drawable/button_shape"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:layout_margin="20dp"
+        android:layout_centerInParent="true"
+        android:padding="@dimen/activity_normal_margin"
         android:onClick="loginToRest"
-        android:text="@string/login_label" />
+        android:drawableLeft="@drawable/twitter_white32"
+        android:drawablePadding="@dimen/activity_small_margin"
+        android:text="@string/login_label"
+        android:textColor="@color/white"
+        android:shadowColor="@color/neutral"
+        android:shadowDx="0"
+        android:shadowDy="0"
+        android:shadowRadius="5"
+
+     />
 
 </RelativeLayout>

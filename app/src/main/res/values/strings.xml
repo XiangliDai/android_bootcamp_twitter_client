@@ -2,7 +2,7 @@
 <resources>
 
     <string name="app_name">SimpleTweets</string>
-    <string name="login_label">Log in</string>
+    <string name="login_label">Sign in with Twitter</string>
     <string name="title_activity_timeline">Home</string>
     <string name="action_compose">compose</string>
     <string name="action_tweet">Tweet</string>

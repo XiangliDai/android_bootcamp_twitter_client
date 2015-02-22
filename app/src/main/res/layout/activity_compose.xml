@@ -8,9 +8,9 @@
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"
-        android:minHeight="40dp"
+        android:minHeight="@dimen/toolbar_height"
         android:layout_width="fill_parent"
-        android:layout_height="40dp"
+        android:layout_height="@dimen/toolbar_height"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
         android:background="@color/twitter_blue">
@@ -31,8 +31,8 @@
         android:layout_below="@id/toolbar">
         <ImageView
             android:id="@+id/ivProfile"
-            android:layout_width="40dp"
-            android:layout_height="40dp" 
+            android:layout_width="@dimen/avatar_size"
+            android:layout_height="@dimen/avatar_size"
             android:layout_marginRight="@dimen/activity_normal_margin"/>
 
         <TextView
