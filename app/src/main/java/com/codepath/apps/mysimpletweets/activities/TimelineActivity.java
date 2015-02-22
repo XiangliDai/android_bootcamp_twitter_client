@@ -70,9 +70,11 @@ public class TimelineActivity extends ActionBarActivity {
                 android.R.color.holo_orange_light,
                 android.R.color.holo_red_light);
 
-        getCachedTweets();
-        
-        if(Utils.isNetworkAvailable(this)) {
+
+        if(!Utils.isNetworkAvailable(this)){
+            getCachedTweets();
+        }
+        else {
             getNewerTimeline();
        
             if(TwitterApplication.getCurrentUser().getUser()== null) {
@@ -83,7 +85,7 @@ public class TimelineActivity extends ActionBarActivity {
 
     private void getCachedTweets() {
        tweetList.addAll(Tweet.getAll());
-        tweetAdapter.notifyDataSetChanged();
+       tweetAdapter.notifyDataSetChanged();
     }
 
     private void getCurrentUser() {
