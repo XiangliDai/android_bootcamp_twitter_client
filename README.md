@@ -40,4 +40,4 @@ Improve the user interface and theme the app to feel "twitter branded"
 Walkthrough of all user stories:
 
 
-![alt tag](https://github.com/XiangliDai/android_bootcamp_twitter_client/blob/master/app/src/main/week-3.gif)
+![alt tag](https://github.com/XiangliDai/android_bootcamp_twitter_client/blob/master/week-3.gif)
