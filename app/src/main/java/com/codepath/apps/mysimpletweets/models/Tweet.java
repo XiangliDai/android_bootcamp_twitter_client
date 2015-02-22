@@ -89,7 +89,7 @@ public class Tweet extends Model implements Parcelable{
                 tweet.user =  tUser ;
             }
 
-                
+              tweet.save();
         } catch (JSONException e) {
             e.printStackTrace();
             return null;
@@ -113,7 +113,7 @@ public class Tweet extends Model implements Parcelable{
                 Tweet result = Tweet.fromJson(resultJson);
                 
                 if (result != null) {
-                    result.save();
+
                     tweets.add(result);
                 }
                
@@ -164,7 +164,7 @@ public class Tweet extends Model implements Parcelable{
     public static List<Tweet> getAll() {
         return new Select()
                 .from(Tweet.class)
-                .orderBy("created_at")
+                .orderBy("uid desc")
                 .execute();
     }
 }

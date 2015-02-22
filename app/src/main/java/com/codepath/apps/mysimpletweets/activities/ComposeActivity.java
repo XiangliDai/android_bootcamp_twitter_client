@@ -107,6 +107,7 @@ public class ComposeActivity extends ActionBarActivity {
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 if (response != null && response.length() > 0) {
                     Tweet tweet = Tweet.fromJson(response);
+
                     Intent returnIntent = new Intent();
                     returnIntent.putExtra("tweet", tweet);
                     setResult(RESULT_OK, returnIntent);
