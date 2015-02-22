@@ -1,8 +1,10 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools" 
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.codepath.apps.mysimpletweets.activities.ComposeActivity">
+    tools:context="com.codepath.apps.mysimpletweets.activities.ComposeActivity"
+    android:orientation="vertical"
+    android:background="@color/white">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"
@@ -12,33 +14,62 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
         android:background="@color/twitter_blue">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:layout_gravity="right"
+            android:id="@+id/toolbar_text" />
+
+
     </android.support.v7.widget.Toolbar>
     <RelativeLayout
         android:id="@+id/rlProfile"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_margin="@dimen/activity_large_margin"
         android:layout_below="@id/toolbar">
         <ImageView
             android:id="@+id/ivProfile"
             android:layout_width="40dp"
             android:layout_height="40dp" 
-            android:layout_margin="5dp"/>
+            android:layout_marginRight="@dimen/activity_normal_margin"/>
+
         <TextView
             android:id="@+id/tvUserName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toRightOf="@+id/ivProfile"/>
+            android:fontFamily="sans-serif"
+            android:textColor="@color/secondary_darkest"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:layout_toRightOf="@+id/ivProfile"
+            android:layout_alignTop="@+id/ivProfile"/>
+
         <TextView
             android:id="@+id/tvScreeName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_below="@+id/tvUserName"
             android:layout_toRightOf="@+id/ivProfile"
-            android:layout_below="@+id/tvUserName"/>
-        
-        </RelativeLayout>
+            android:fontFamily="sans-serif"
+            android:textColor="@color/neutral"
+            android:textSize="12sp" />
+    </RelativeLayout>
     <EditText
+        android:layout_marginLeft="@dimen/activity_large_margin"
         android:id="@+id/etBody"
         android:layout_width="match_parent"
-        android:layout_height="fill_parent"
-        android:layout_below="@+id/rlProfile"/>
-</RelativeLayout>
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:gravity="top" 
+        android:hint="@string/tweet_hint"
+        android:textColorHint="@color/secondary_light"
+        android:fontFamily="sans-serif"
+        android:textColor="@color/secondary_darker"
+        android:textSize="14sp"
+        android:textStyle="normal"
+        android:maxLength="140"
+        />
+
+</LinearLayout>
