@@ -13,6 +13,7 @@ import com.codepath.apps.mysimpletweets.EndlessScrollListener;
 import com.codepath.apps.mysimpletweets.R;
 import com.codepath.apps.mysimpletweets.TwitterApplication;
 import com.codepath.apps.mysimpletweets.TwitterJsonHttpResponseHandler;
+import com.codepath.apps.mysimpletweets.Utils;
 import com.codepath.apps.mysimpletweets.adapters.TweetAdapter;
 import com.codepath.apps.mysimpletweets.models.Tweet;
 import com.codepath.apps.mysimpletweets.models.User;
@@ -69,10 +70,20 @@ public class TimelineActivity extends ActionBarActivity {
                 android.R.color.holo_orange_light,
                 android.R.color.holo_red_light);
 
-        getNewerTimeline();
-        if(TwitterApplication.getCurrentUser().getUser()== null) {
-            getCurrentUser();
+        getCachedTweets();
+        
+        if(Utils.isNetworkAvailable(this)) {
+            getNewerTimeline();
+       
+            if(TwitterApplication.getCurrentUser().getUser()== null) {
+                getCurrentUser();
+            }
         }
+    }
+
+    private void getCachedTweets() {
+       tweetList.addAll(Tweet.getAll());
+        tweetAdapter.notifyDataSetChanged();
     }
 
     private void getCurrentUser() {

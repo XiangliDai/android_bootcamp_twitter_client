@@ -19,14 +19,14 @@ public class TwitterJsonHttpResponseHandler extends JsonHttpResponseHandler {
     public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject
             errorResponse) {
         Log.e(TwitterJsonHttpResponseHandler.class.getSimpleName(), "failed " + statusCode);
-        //Toast.makeText(TAG, errorResponse.)
         try {
-            JSONArray errors = errorResponse.getJSONArray("errors");
+            if(errorResponse != null && errorResponse.has("errors")) {
+                JSONArray errors = errorResponse.getJSONArray("errors");
 
-            JSONObject error = errors.getJSONObject(0);
-            String errorMessage = error.getString("message");
-            Toast.makeText(context, errorMessage, Toast.LENGTH_SHORT).show();
-
+                JSONObject error = errors.getJSONObject(0);
+                String errorMessage = error.getString("message");
+                Toast.makeText(context, errorMessage, Toast.LENGTH_SHORT).show();
+            }
         } catch (JSONException e) {
             e.printStackTrace();
         }

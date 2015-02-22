@@ -2,6 +2,7 @@ package com.codepath.apps.mysimpletweets;
 
 import android.content.Context;
 
+import com.activeandroid.ActiveAndroid;
 import com.codepath.apps.mysimpletweets.net.TwitterClient;
 
 /*
@@ -20,6 +21,7 @@ public class TwitterApplication extends com.activeandroid.app.Application {
 	public void onCreate() {
 		super.onCreate();
 		TwitterApplication.context = this;
+        ActiveAndroid.initialize(this);
 	}
 
 	public static TwitterClient getRestClient() {

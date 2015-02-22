@@ -15,7 +15,7 @@
     <uses-permission
         android:name="android.permission.READ_EXTERNAL_STORAGE"
         android:maxSdkVersion="18" />
-
+<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <application
         android:name=".TwitterApplication"
         android:allowBackup="true"
@@ -24,10 +24,13 @@
         android:theme="@style/AppTheme" >
         <meta-data
             android:name="AA_DB_NAME"
-            android:value="RestClient.db" />
+            android:value="TwitterClient.db" />
         <meta-data
             android:name="AA_DB_VERSION"
             android:value="1" />
+        <meta-data
+            android:name="AA_MODELS"
+            android:value="com.codepath.apps.mysimpletweets.models.User, com.codepath.apps.mysimpletweets.models.Tweet" />
 
         <activity
             android:name=".activities.LoginActivity"
@@ -65,6 +68,7 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.codepath.apps.mysimpletweets.activities.TimelineActivity" />
         </activity>
+
     </application>
 
 </manifest>

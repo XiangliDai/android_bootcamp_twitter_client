@@ -3,6 +3,11 @@ package com.codepath.apps.mysimpletweets.models;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.activeandroid.ActiveAndroid;
+import com.activeandroid.Model;
+import com.activeandroid.annotation.Column;
+import com.activeandroid.annotation.Table;
+import com.activeandroid.query.Select;
 import com.codepath.apps.mysimpletweets.Utils;
 
 import org.json.JSONArray;
@@ -10,18 +15,25 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Pattern;
-
-public class Tweet implements Parcelable{
-
+@Table(name = "tweet")
+public class Tweet extends Model implements Parcelable{
+    @Column(name = "body")
     private String body;
+    @Column(name = "uid")
     private long uid;
+    @Column(name = "created_at")
     private String createdAt;
+    @Column(name = "user", onUpdate = Column.ForeignKeyAction.CASCADE, onDelete = Column.ForeignKeyAction.CASCADE)
     private User user;
-
+    @Column(name = "favourites_count")
     private int favouritesCount;
-   private int retweetCount;
+    @Column(name = "retweet_count")
+    private int retweetCount;
+    @Column(name = "retween_name")
     private String retweenName;
+    
     public User getUser() {
         return user;
     }
@@ -51,7 +63,10 @@ public class Tweet implements Parcelable{
         return retweenName;
     }
 
-    public Tweet (){}
+    public Tweet (){
+        super();
+    }
+    
     public static Tweet fromJson(JSONObject jsonObject) {
         Tweet tweet = new Tweet();
         try {
@@ -73,6 +88,7 @@ public class Tweet implements Parcelable{
                 tweet.createdAt = jsonObject.has("created_at") ? Utils.getRelativeTimeString(jsonObject.getString("created_at")) : "";
                 tweet.user =  tUser ;
             }
+
                 
         } catch (JSONException e) {
             e.printStackTrace();
@@ -82,24 +98,33 @@ public class Tweet implements Parcelable{
     }
 
     public static ArrayList<Tweet> fromJsonArray(JSONArray jsonArray) {
-        if(jsonArray == null || jsonArray.length() < 1) return null;
+        if (jsonArray == null || jsonArray.length() < 1) return null;
         ArrayList<Tweet> tweets = new ArrayList<>(jsonArray.length());
-
-        for (int i = 0; i < jsonArray.length(); i++) {
-            JSONObject resultJson = null;
-            try {
-                resultJson = jsonArray.getJSONObject(i);
-            } catch (Exception e) {
-                e.printStackTrace();
-                continue;
+        ActiveAndroid.beginTransaction();
+        try {
+            for (int i = 0; i < jsonArray.length(); i++) {
+                JSONObject resultJson = null;
+                try {
+                    resultJson = jsonArray.getJSONObject(i);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    continue;
+                }
+                Tweet result = Tweet.fromJson(resultJson);
+                
+                if (result != null) {
+                    result.save();
+                    tweets.add(result);
+                }
+               
             }
-            Tweet result = Tweet.fromJson(resultJson);
-            if (result != null) {
-                tweets.add(result);
-            }
+            ActiveAndroid.setTransactionSuccessful();
+            return tweets;
+        } finally {
+            ActiveAndroid.endTransaction();
         }
-        return tweets;
     }
+        
 
     @Override
     public int describeContents() {
@@ -135,4 +160,11 @@ public class Tweet implements Parcelable{
             return new Tweet[size];
         }
     };
+
+    public static List<Tweet> getAll() {
+        return new Select()
+                .from(Tweet.class)
+                .orderBy("created_at")
+                .execute();
+    }
 }
