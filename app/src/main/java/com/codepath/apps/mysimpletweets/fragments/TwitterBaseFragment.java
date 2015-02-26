@@ -106,7 +106,6 @@ public abstract class TwitterBaseFragment extends Fragment implements TweetAdapt
 
     @Override
     public void onClicked(Long userId) {
-
         launchProfile(userId);
     }
 

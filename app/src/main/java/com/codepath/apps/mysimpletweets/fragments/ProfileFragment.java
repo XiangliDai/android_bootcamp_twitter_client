@@ -1,7 +1,6 @@
 package com.codepath.apps.mysimpletweets.fragments;
 
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,13 +19,6 @@ import com.squareup.picasso.Picasso;
 import org.apache.http.Header;
 import org.json.JSONObject;
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * to handle interaction events.
- * Use the {@link ProfileFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class ProfileFragment extends TwitterBaseFragment {
     // TODO: Rename parameter arguments, choose names that match
     RelativeLayout rlProfile;
@@ -39,12 +31,6 @@ public class ProfileFragment extends TwitterBaseFragment {
     ImageView ivProfileBackground;
    
     private Long userId;
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *    
-     * @return A new instance of fragment ProfileFragment.
-     */
     // TODO: Rename and change types and number of parameters
     public static ProfileFragment newInstance(Long userId) {
         ProfileFragment fragment = new ProfileFragment();
@@ -63,10 +49,8 @@ public class ProfileFragment extends TwitterBaseFragment {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             this.userId = getArguments().getLong("userId");
-
         }
         this.fragmentId = R.layout.fragment_profile;
-        
     }
 
     @Override
@@ -89,7 +73,7 @@ public class ProfileFragment extends TwitterBaseFragment {
 
     @Override
     protected void getCachedTweets() {
-
+        //TODO: get all user times from local DB
     }
 
     @Override
@@ -114,7 +98,6 @@ public class ProfileFragment extends TwitterBaseFragment {
 
     private void getUser() {
         TwitterApplication.getRestClient().getUserInformation(userId, getUserJsonHttpResponseHandler());
-
     }
 
 
@@ -136,13 +119,15 @@ public class ProfileFragment extends TwitterBaseFragment {
                         Picasso.with(getActivity()).load(user.getProfileBackgroundImageUrl()).resize(deviceWidth, 0).into(ivProfileBackground);
                     }
                     Picasso.with(getActivity()).load(user.getProfileImageUrl()).into(ivProfile);
-
-                    
                 }
             }
         };
     }
-
+    
+    @Override
+    public void onClicked(Long userId) {
+       return;
+    }
 
    
 }
