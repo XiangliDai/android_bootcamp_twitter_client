@@ -89,7 +89,7 @@ public class ProfileFragment extends TwitterBaseFragment {
 
     @Override
     protected void getCachedTweets() {
-        
+
     }
 
     @Override

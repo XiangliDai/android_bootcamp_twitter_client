@@ -1,5 +1,6 @@
 package com.codepath.apps.mysimpletweets.fragments;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -13,8 +14,10 @@ import com.codepath.apps.mysimpletweets.R;
 import com.codepath.apps.mysimpletweets.TwitterApplication;
 import com.codepath.apps.mysimpletweets.TwitterJsonHttpResponseHandler;
 import com.codepath.apps.mysimpletweets.Utils;
+import com.codepath.apps.mysimpletweets.activities.ProfileActivity;
 import com.codepath.apps.mysimpletweets.adapters.TweetAdapter;
 import com.codepath.apps.mysimpletweets.models.Tweet;
+import com.codepath.apps.mysimpletweets.net.TwitterClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
 
 import org.apache.http.Header;
@@ -24,7 +27,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public abstract class TwitterBaseFragment extends Fragment {
+public abstract class TwitterBaseFragment extends Fragment implements TweetAdapter.IProfileImageClickListener {
     protected ListView lvList;
     protected List<Tweet> tweetList;
     protected SwipeRefreshLayout swipeContainer;
@@ -44,7 +47,7 @@ public abstract class TwitterBaseFragment extends Fragment {
         lvList = (ListView) view.findViewById(R.id.lvList) ;
 
         tweetList = new ArrayList<>();
-        tweetAdapter = new TweetAdapter(getActivity(), tweetList, null);
+        tweetAdapter = new TweetAdapter(getActivity(), tweetList, this);
         lvList.setAdapter(tweetAdapter);
         lvList.setOnScrollListener(new EndlessScrollListener() {
             @Override
@@ -99,6 +102,18 @@ public abstract class TwitterBaseFragment extends Fragment {
                 }
             }
         };
+    }
+
+    @Override
+    public void onClicked(Long userId) {
+
+        launchProfile(userId);
+    }
+
+    private void launchProfile(Long userId) {
+        Intent intent = new Intent(getActivity(), ProfileActivity.class);
+        intent.putExtra("userId", userId == 0 ?  TwitterClient.CURRENT_USER_ID :userId);
+        startActivity(intent);
     }
 
 }
