@@ -20,6 +20,32 @@ public class User extends Model implements Parcelable {
     private String screenName;
     @Column(name = "profile_image_url")
     private String profileImageUrl;
+    @Column(name = "followers_count")
+    private Long followersCount;
+    @Column(name = "friends_count")
+    private Long friendsCount;
+
+    @Column(name = "statuses_count")
+    private Long statusesCount;
+
+    @Column(name = "profile_background_image_url")
+    private String profileBackgroundImageUrl;
+    public Long getFollowersCount() {
+        return followersCount;
+    }
+
+    public Long getFriendsCount() {
+        return friendsCount;
+    }
+
+    public Long getStatusesCount() {
+        return statusesCount;
+    }
+
+    public String getProfileBackgroundImageUrl() {
+        return profileBackgroundImageUrl;
+    }
+
 
     public User(){
         super();
@@ -30,6 +56,10 @@ public class User extends Model implements Parcelable {
         screenName = in.readString();
         profileImageUrl = in.readString();
         uid = in.readLong();
+        followersCount = in.readLong();
+        friendsCount = in.readLong();
+        statusesCount = in.readLong();
+        profileBackgroundImageUrl = in.readString();
     }
 
     public String getName() {
@@ -55,6 +85,10 @@ public class User extends Model implements Parcelable {
             user.uid = jsonObject.has("id") ? jsonObject.getLong("id") : 0;
             user.screenName = jsonObject.has("screen_name") ? jsonObject.getString("screen_name") : "";
             user.profileImageUrl = jsonObject.has("profile_image_url") ? jsonObject.getString("profile_image_url") : "";
+            user.followersCount = jsonObject.has("followers_count") ? jsonObject.getLong("followers_count") : 0;
+            user.friendsCount = jsonObject.has("friends_count") ? jsonObject.getLong("friends_count") : 0;
+            user.statusesCount = jsonObject.has("statuses_count") ? jsonObject.getLong("statuses_count") : 0;
+            user.profileBackgroundImageUrl = jsonObject.has("profile_banner_url") ? jsonObject.getString("profile_banner_url") : "";
             user.save();
         } catch (JSONException e) {
             e.printStackTrace();
@@ -74,6 +108,10 @@ public class User extends Model implements Parcelable {
         dest.writeString(screenName);
         dest.writeString(profileImageUrl);
         dest.writeLong(uid);
+        dest.writeLong(followersCount);
+        dest.writeLong(friendsCount);
+        dest.writeLong(statusesCount);
+        dest.writeString(profileBackgroundImageUrl);
     }
     
     public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {

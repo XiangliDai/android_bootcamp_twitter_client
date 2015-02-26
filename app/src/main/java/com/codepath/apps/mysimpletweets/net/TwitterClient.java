@@ -1,6 +1,7 @@
 package com.codepath.apps.mysimpletweets.net;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.codepath.oauth.OAuthBaseClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
@@ -28,19 +29,25 @@ public class TwitterClient extends OAuthBaseClient {
 	public static final String REST_CONSUMER_KEY = "VrKKVOeZiD1hxhnhVetZ7TiKD";       // Change this
 	public static final String REST_CONSUMER_SECRET = "UzX5hhwvsHHku3gMebcjC4InG565h8Exg6lgsO0zkEpConWBEI"; // Change this
 	public static final String REST_CALLBACK_URL = "oauth://cpsimpletweets"; // Change this (here and in manifest)
-    public static final String REST_USER_ID = "165651913";
+    public static final Long CURRENT_USER_ID = Long.valueOf(165651913);
     public static int COUNT_PER_CALL = 25;
 	public TwitterClient(Context context) {
 		super(context, REST_API_CLASS, REST_URL, REST_CONSUMER_KEY, REST_CONSUMER_SECRET, REST_CALLBACK_URL);
 	}
 
-    public void getCurrentUserInformation(AsyncHttpResponseHandler handler){
-        String apiUrl = getApiUrl("users/lookup.json");
+    public void getUserInformation(Long userId, AsyncHttpResponseHandler handler){
+        Log.d(TwitterClient.class.getSimpleName(), "getUserInformation userId: " + userId);
+        String apiUrl = getApiUrl("users/show.json");
         // Can specify query string params directly or through RequestParams.
         RequestParams params = new RequestParams();
-        params.put("user_id", REST_USER_ID);
+        params.put("user_id", userId);
         client.get(apiUrl, params, handler);
 
+    }
+
+
+    public void getCurrentUserInformation(AsyncHttpResponseHandler handler){
+        getUserInformation(CURRENT_USER_ID, handler);
     }
     
     public void getNewerTimelineList(Long sinceId, AsyncHttpResponseHandler handler){
@@ -69,6 +76,49 @@ public class TwitterClient extends OAuthBaseClient {
         RequestParams params = new RequestParams();
         params.put("status", status);
         client.post(apiUrl, params, handler);
+    }
+    
+    public void getNewerMentionsList(Long sinceId, AsyncHttpResponseHandler handler){
+        String apiUrl = getApiUrl("statuses/mentions_timeline.json");
+        // Can specify query string params directly or through RequestParams.
+        RequestParams params = new RequestParams();
+        params.put("count", COUNT_PER_CALL);
+        params.put("since_id", sinceId);
+        client.get(apiUrl, params, handler);
+        
+    }
+    
+    public void getOlderMentionsList(Long maxId, AsyncHttpResponseHandler handler){
+        String apiUrl = getApiUrl("statuses/mentions_timeline.json");
+        // Can specify query string params directly or through RequestParams.
+        RequestParams params = new RequestParams();
+        params.put("count", COUNT_PER_CALL);
+        params.put("since_id", maxId);
+        client.get(apiUrl, params, handler);
+        
+    }
+
+
+    public void getNewerUserTimelineList(Long userId, Long sinceId, AsyncHttpResponseHandler handler){
+        String apiUrl = getApiUrl("statuses/user_timeline.json");
+        // Can specify query string params directly or through RequestParams.
+        RequestParams params = new RequestParams();
+        params.put("user_id", userId);
+        params.put("count", COUNT_PER_CALL);
+        params.put("since_id", sinceId);
+        client.get(apiUrl, params, handler);
+
+    }
+
+    public void getOlderUserTimelineList(long userId, Long maxId, AsyncHttpResponseHandler handler){
+        String apiUrl = getApiUrl("statuses/user_timeline.json");
+        // Can specify query string params directly or through RequestParams.
+        RequestParams params = new RequestParams();
+        params.put("user_id", userId);
+        params.put("count", COUNT_PER_CALL);
+        params.put("max_id", maxId);
+        client.get(apiUrl, params, handler);
+
     }
 	/* 1. Define the endpoint URL with getApiUrl and pass a relative path to the endpoint
 	 * 	  i.e getApiUrl("statuses/home_timeline.json");

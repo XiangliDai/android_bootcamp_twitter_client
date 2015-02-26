@@ -18,6 +18,12 @@ import java.util.List;
 
 public class TweetAdapter extends ArrayAdapter<Tweet> {
 
+    public interface IProfileImageClickListener{
+        void onClicked(Long userId);
+        
+    }
+    
+    private IProfileImageClickListener profileImageClickListener;
     private static class ViewHolder {
         public ImageView ivImage;
         public TextView tvUserName;
@@ -29,8 +35,9 @@ public class TweetAdapter extends ArrayAdapter<Tweet> {
         public TextView tvRetweeted;
     }
 
-    public TweetAdapter(Context context, List<Tweet> tweets) {
+    public TweetAdapter(Context context, List<Tweet> tweets, IProfileImageClickListener profileImageClickListener) {
         super(context, 0, tweets);
+        this.profileImageClickListener = profileImageClickListener;
 
     }
 
@@ -83,6 +90,16 @@ public class TweetAdapter extends ArrayAdapter<Tweet> {
                 .load(Uri.parse(tweet.getUser().getProfileImageUrl()))
                 .fit().centerCrop()
                 .into(viewHolder.ivImage);
+        
+        viewHolder.ivImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(profileImageClickListener != null) {
+                    profileImageClickListener.onClicked(tweet.getUser().getUid());
+                }
+                
+            }
+        });
         return convertView;
     }
 

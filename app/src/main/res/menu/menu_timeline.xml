@@ -2,7 +2,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.codepath.apps.mysimpletweets.activities.TimelineActivity">
-    <item android:id="@+id/action_compose" android:title="@string/action_compose"
+    <item android:id="@+id/action_compose" android:title="@string/compose"
 
-        android:orderInCategory="5" app:showAsAction="always" android:icon="@drawable/note24" />
+        android:orderInCategory="100" app:showAsAction="always" android:icon="@drawable/note24" />
+    <item android:id="@+id/action_profile" android:title="@string/profile"
+
+        android:orderInCategory="5" app:showAsAction="always" android:icon="@drawable/photo24" />
 </menu>
