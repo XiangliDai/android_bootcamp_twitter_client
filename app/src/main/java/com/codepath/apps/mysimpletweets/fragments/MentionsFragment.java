@@ -26,21 +26,14 @@ public class MentionsFragment extends TwitterBaseFragment {
 
     @Override
     protected void getNewerList() {
-        long currentId = 1;
-        if (tweetList != null && tweetList.size() > 0) {
-            currentId = tweetList.get(0).getUid();
-        }
+       super.getNewerList();
         TwitterApplication.getRestClient().getNewerMentionsList(currentId, getJsonHttpResponseHandler());
     }
 
     @Override
     protected void getOlderList() {
-        long currentId = 1;
-        if (tweetList != null && tweetList.size() > 0) {
-            int index = tweetList.size() - 1;
-            currentId = tweetList.get(index).getUid();
-        }
-        TwitterApplication.getRestClient().getOlderMentionsList(currentId, getJsonHttpResponseHandler());
+      super.getOlderList();
+      TwitterApplication.getRestClient().getOlderMentionsList(currentId, getJsonHttpResponseHandler());
     }
 
     @Override

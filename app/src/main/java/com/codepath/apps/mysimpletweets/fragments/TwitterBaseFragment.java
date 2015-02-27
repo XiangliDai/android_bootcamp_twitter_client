@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 
 import com.codepath.apps.mysimpletweets.EndlessScrollListener;
 import com.codepath.apps.mysimpletweets.R;
@@ -34,7 +35,7 @@ public abstract class TwitterBaseFragment extends Fragment implements TweetAdapt
     protected SwipeRefreshLayout swipeContainer;
     protected TweetAdapter tweetAdapter;
     protected int fragmentId;
-
+    protected ProgressBar pb;
     public TwitterBaseFragment() {
         // Required empty public constructor
     }
@@ -57,7 +58,10 @@ public abstract class TwitterBaseFragment extends Fragment implements TweetAdapt
 
             }
         });
-
+        View footerView =  inflater.inflate(R.layout.footer_layout, null, false);
+        lvList.addFooterView(footerView);
+        pb = (ProgressBar) footerView.findViewById(R.id.pbLoading);
+        pb.setVisibility(ProgressBar.INVISIBLE);
         swipeContainer = (SwipeRefreshLayout) view.findViewById(R.id.swipeContainer);
         swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -84,10 +88,24 @@ public abstract class TwitterBaseFragment extends Fragment implements TweetAdapt
     }
 
     protected abstract void getCachedTweets() ;
+    protected long currentId = 1;
+    protected void getNewerList(){
+        currentId = 1;
+        if (tweetList != null && tweetList.size() > 0) {
+            currentId = tweetList.get(0).getUid();
+        }
+        
+    }
 
-    protected abstract void getNewerList();
-
-    protected abstract void getOlderList();
+    protected void getOlderList(){
+        currentId = 1;
+        if (tweetList != null && tweetList.size() > 0) {
+            int index = tweetList.size() - 1;
+            currentId = tweetList.get(index).getUid();
+        }
+        pb.setVisibility(View.VISIBLE);
+        
+    }
 
 
     protected JsonHttpResponseHandler getJsonHttpResponseHandler() {
@@ -96,6 +114,9 @@ public abstract class TwitterBaseFragment extends Fragment implements TweetAdapt
             public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
                 if (swipeContainer.isRefreshing()) {
                     swipeContainer.setRefreshing(false);
+                }
+                if(pb.getVisibility() == View.VISIBLE){
+                    pb.setVisibility(View.INVISIBLE);
                 }
                 if (response != null && response.length() > 0) {
                     tweetList.addAll(Tweet.fromJsonArray(response));
