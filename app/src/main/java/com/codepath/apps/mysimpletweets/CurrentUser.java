@@ -4,8 +4,7 @@ import com.codepath.apps.mysimpletweets.models.User;
 import com.loopj.android.http.JsonHttpResponseHandler;
 
 import org.apache.http.Header;
-import org.json.JSONArray;
-import org.json.JSONException;
+import org.json.JSONObject;
 
 public class CurrentUser {
     private static CurrentUser instance = null;
@@ -25,6 +24,7 @@ public class CurrentUser {
     public  void setUser(User user) {
         this.user = user;
     }
+    
     public  User getUser(){
         return this.user;
         
@@ -33,14 +33,10 @@ public class CurrentUser {
     public void requestCurrentUser() {
         TwitterApplication.getRestClient().getCurrentUserInformation(new JsonHttpResponseHandler() {
             @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
-                if (response != null && response.length() > 0) {
-                    try {
-                        User user = User.fromJson(response.getJSONObject(0));
-                        TwitterApplication.getCurrentUser().setUser(user);
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                if (response != null) {
+                    User user = User.fromJson(response);
+                    TwitterApplication.getCurrentUser().setUser(user);
 
                 }
             }

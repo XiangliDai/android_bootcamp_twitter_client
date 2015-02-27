@@ -16,7 +16,7 @@ import com.codepath.apps.mysimpletweets.net.TwitterClient;
 
 public class TimelineActivity extends ActionBarActivity {
     private static final String TAG = TimelineActivity.class.getSimpleName();
-    private static final int REQUEST_CODE = 10;
+    public static final int REQUEST_CODE = 10;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -70,7 +70,7 @@ public class TimelineActivity extends ActionBarActivity {
     private void launchProfile() {
         Intent intent = new Intent(this, ProfileActivity.class);
         intent.putExtra("userId",  TwitterClient.CURRENT_USER_ID );
-        startActivityForResult(intent, REQUEST_CODE);
+        startActivity(intent);
     }
 
     private void launchComposer() {

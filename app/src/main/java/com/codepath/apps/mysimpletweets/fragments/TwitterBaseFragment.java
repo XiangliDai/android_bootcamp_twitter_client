@@ -15,6 +15,7 @@ import com.codepath.apps.mysimpletweets.TwitterApplication;
 import com.codepath.apps.mysimpletweets.TwitterJsonHttpResponseHandler;
 import com.codepath.apps.mysimpletweets.Utils;
 import com.codepath.apps.mysimpletweets.activities.ProfileActivity;
+import com.codepath.apps.mysimpletweets.activities.TimelineActivity;
 import com.codepath.apps.mysimpletweets.adapters.TweetAdapter;
 import com.codepath.apps.mysimpletweets.models.Tweet;
 import com.codepath.apps.mysimpletweets.net.TwitterClient;
@@ -115,4 +116,16 @@ public abstract class TwitterBaseFragment extends Fragment implements TweetAdapt
         startActivity(intent);
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        // Check which request we're responding to
+        if (requestCode == TimelineActivity.REQUEST_CODE) {
+            Tweet tweet = data.getParcelableExtra("tweet");
+            if(tweet != null ){
+                if(tweetList == null) tweetList = new ArrayList<>();
+                tweetList.add(0 ,tweet);
+                tweetAdapter.notifyDataSetChanged();
+            }
+        }
+    }
 }
