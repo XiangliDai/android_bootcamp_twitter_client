@@ -13,12 +13,15 @@ import android.view.MenuItem;
 import com.astuetz.PagerSlidingTabStrip;
 import com.codepath.apps.mysimpletweets.R;
 import com.codepath.apps.mysimpletweets.adapters.TwitterFragmentPagerAdapter;
+import com.codepath.apps.mysimpletweets.fragments.TimelineFragment;
 import com.codepath.apps.mysimpletweets.models.Tweet;
 import com.codepath.apps.mysimpletweets.net.TwitterClient;
 
 public class TimelineActivity extends ActionBarActivity {
     private static final String TAG = TimelineActivity.class.getSimpleName();
     public static final int REQUEST_CODE = 10;
+    private PagerSlidingTabStrip tabsStrip;
+    private ViewPager fragmentViewPager;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -33,13 +36,15 @@ public class TimelineActivity extends ActionBarActivity {
 
 
         // Get the ViewPager and set it's PagerAdapter so that it can display items
-        ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
-        viewPager.setAdapter(new TwitterFragmentPagerAdapter(this,  getSupportFragmentManager()));
+        fragmentViewPager = (ViewPager) findViewById(R.id.viewpager);
+        fragmentViewPager.setAdapter(new TwitterFragmentPagerAdapter(this,  getSupportFragmentManager()));
 
         // Give the PagerSlidingTabStrip the ViewPager
-        PagerSlidingTabStrip tabsStrip = (PagerSlidingTabStrip) findViewById(R.id.tabs);
+        tabsStrip = (PagerSlidingTabStrip) findViewById(R.id.tabs);
         // Attach the view pager to the tab strip
-        tabsStrip.setViewPager(viewPager);
+        tabsStrip.setViewPager(fragmentViewPager);
+        
+        //viewPager.setCurrentItem(1);
     }
     
     @Override
@@ -111,17 +116,16 @@ public class TimelineActivity extends ActionBarActivity {
         startActivityForResult(intent, REQUEST_CODE);
 
     }
-    
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         // Check which request we're responding to
         if (requestCode == REQUEST_CODE  && resultCode == RESULT_OK) {
             Tweet tweet = data.getParcelableExtra("tweet");
-            /*if(tweet != null ){
-                if(tweetList == null) tweetList = new ArrayList<>();
-                tweetList.add(0 ,tweet);
-                tweetAdapter.notifyDataSetChanged();
-            }*/
+            if(tweet != null ) {
+                TimelineFragment fragment = (TimelineFragment) ((TwitterFragmentPagerAdapter)fragmentViewPager.getAdapter()).getItem(0);
+                fragment.updateList(tweet);
+                fragmentViewPager.setCurrentItem(0);
+            }
         }
     }
 

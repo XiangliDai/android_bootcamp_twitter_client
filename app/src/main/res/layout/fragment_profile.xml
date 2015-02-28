@@ -18,7 +18,9 @@
             <ImageView
                 android:id="@+id/ivProfileBackground"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:minHeight="100dp"
+                android:background="@color/secondary_light"/>
 
             <RelativeLayout
 
