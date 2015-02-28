@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,6 +25,8 @@ import com.loopj.android.http.JsonHttpResponseHandler;
 
 import org.apache.http.Header;
 import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -112,18 +115,38 @@ public abstract class TwitterBaseFragment extends Fragment implements TweetAdapt
         return new TwitterJsonHttpResponseHandler(getActivity()) {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
-                if (swipeContainer.isRefreshing()) {
-                    swipeContainer.setRefreshing(false);
-                }
-                if(pb.getVisibility() == View.VISIBLE){
-                    pb.setVisibility(View.INVISIBLE);
-                }
-                if (response != null && response.length() > 0) {
-                    tweetList.addAll(Tweet.fromJsonArray(response));
-                    tweetAdapter.notifyDataSetChanged();
+                Log.d(TwitterJsonHttpResponseHandler.class.getSimpleName(), "succeed " + statusCode);
+                updateDataSet(response);
+            }
+
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+              
+                if (response != null) {
+                    try {
+                        JSONArray jsonArray = response.getJSONArray("statuses");
+                        if(jsonArray != null && jsonArray.length() >0){
+                            updateDataSet(jsonArray);
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         };
+    }
+
+    private void updateDataSet(JSONArray response) {
+        if (swipeContainer.isRefreshing()) {
+            swipeContainer.setRefreshing(false);
+        }
+        if(pb.getVisibility() == View.VISIBLE){
+            pb.setVisibility(View.INVISIBLE);
+        }
+        if (response != null && response.length() > 0) {
+            tweetList.addAll(Tweet.fromJsonArray(response));
+            tweetAdapter.notifyDataSetChanged();
+        }
     }
 
     @Override

@@ -62,6 +62,10 @@
             android:name=".activities.ProfileActivity"
             android:label="@string/title_activity_profile" >
         </activity>
+        <activity
+            android:name=".activities.SearchActivity"
+            android:parentActivityName=".activities.TimelineActivity">
+        </activity>
     </application>
 
 </manifest>
