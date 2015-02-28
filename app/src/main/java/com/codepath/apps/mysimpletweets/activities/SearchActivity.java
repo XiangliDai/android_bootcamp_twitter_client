@@ -20,7 +20,10 @@ public class SearchActivity extends ActionBarActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         toolbar.setLogo(R.mipmap.ic_launcher);
-        getSupportActionBar().setTitle(R.string.search);
+        android.support.v7.app.ActionBar actionBar = getSupportActionBar();
+        actionBar.setTitle(R.string.search);
+        actionBar.setDisplayHomeAsUpEnabled(true);
+        actionBar.setDefaultDisplayHomeAsUpEnabled(true);
         toolbar.setTitleTextColor(getResources().getColor(R.color.white));
         query= getIntent().getStringExtra("query");
         Fragment fragment = SearchFragment.newInstance(query);
