@@ -83,9 +83,8 @@ public abstract class TwitterBaseFragment extends Fragment implements
                 android.R.color.holo_green_light,
                 android.R.color.holo_orange_light,
                 android.R.color.holo_red_light);
-        if (!Utils.isNetworkAvailable(getActivity())) {
-            getCachedTweets();
-        } else {
+         getCachedTweets();
+         if(Utils.isNetworkAvailable(getActivity())) {
             getNewerList();
 
             if (TwitterApplication.getCurrentUser().getUser() == null) {
