@@ -13,14 +13,12 @@ import android.view.MenuItem;
 import com.astuetz.PagerSlidingTabStrip;
 import com.codepath.apps.mysimpletweets.R;
 import com.codepath.apps.mysimpletweets.adapters.TwitterFragmentPagerAdapter;
-import com.codepath.apps.mysimpletweets.fragments.TimelineFragment;
-import com.codepath.apps.mysimpletweets.models.Tweet;
+import com.codepath.apps.mysimpletweets.fragments.TwitterBaseFragment;
 import com.codepath.apps.mysimpletweets.net.TwitterClient;
 
 public class TimelineActivity extends ActionBarActivity {
     private static final String TAG = TimelineActivity.class.getSimpleName();
-    public static final int REQUEST_CODE = 10;
-    private PagerSlidingTabStrip tabsStrip;
+     private PagerSlidingTabStrip tabsStrip;
     private ViewPager fragmentViewPager;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,8 +31,6 @@ public class TimelineActivity extends ActionBarActivity {
         
         getSupportActionBar().setTitle("");
         toolbar.setTitleTextColor(getResources().getColor(R.color.white));
-
-
         // Get the ViewPager and set it's PagerAdapter so that it can display items
         fragmentViewPager = (ViewPager) findViewById(R.id.viewpager);
         fragmentViewPager.setAdapter(new TwitterFragmentPagerAdapter(this,  getSupportFragmentManager()));
@@ -43,8 +39,6 @@ public class TimelineActivity extends ActionBarActivity {
         tabsStrip = (PagerSlidingTabStrip) findViewById(R.id.tabs);
         // Attach the view pager to the tab strip
         tabsStrip.setViewPager(fragmentViewPager);
-        
-        //viewPager.setCurrentItem(1);
     }
     
     @Override
@@ -61,7 +55,6 @@ public class TimelineActivity extends ActionBarActivity {
             public boolean onQueryTextSubmit(String query) {
                 if (query != null && query.length() > 0) {
                     // added to minimize background color flicker navigating to inbox search fragment
-
                     launchSearchActivity(query);
                     //clear query
                     searchView.setQuery("", false);
@@ -111,22 +104,9 @@ public class TimelineActivity extends ActionBarActivity {
     }
 
     private void launchComposer() {
-        Intent intent = new Intent(this, ComposeActivity.class);
-        
-        startActivityForResult(intent, REQUEST_CODE);
+        int index = fragmentViewPager.getCurrentItem();
+        TwitterBaseFragment fragment = (TwitterBaseFragment)((TwitterFragmentPagerAdapter)fragmentViewPager.getAdapter()).getItem(index);
 
+        fragment.launchCompose(0, "");
     }
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        // Check which request we're responding to
-        if (requestCode == REQUEST_CODE  && resultCode == RESULT_OK) {
-            Tweet tweet = data.getParcelableExtra("tweet");
-            if(tweet != null ) {
-                TimelineFragment fragment = (TimelineFragment) ((TwitterFragmentPagerAdapter)fragmentViewPager.getAdapter()).getItem(0);
-                fragment.updateList(tweet);
-                fragmentViewPager.setCurrentItem(0);
-            }
-        }
-    }
-
 }

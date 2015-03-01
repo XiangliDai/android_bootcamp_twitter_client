@@ -1,5 +1,6 @@
 package com.codepath.apps.mysimpletweets.fragments;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -16,10 +17,10 @@ import com.codepath.apps.mysimpletweets.R;
 import com.codepath.apps.mysimpletweets.TwitterApplication;
 import com.codepath.apps.mysimpletweets.TwitterJsonHttpResponseHandler;
 import com.codepath.apps.mysimpletweets.Utils;
-import com.codepath.apps.mysimpletweets.activities.ProfileActivity;
+import com.codepath.apps.mysimpletweets.activities.ComposeActivity;
+import com.codepath.apps.mysimpletweets.activities.TimelineActivity;
 import com.codepath.apps.mysimpletweets.adapters.TweetAdapter;
 import com.codepath.apps.mysimpletweets.models.Tweet;
-import com.codepath.apps.mysimpletweets.net.TwitterClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
 
 import org.apache.http.Header;
@@ -31,13 +32,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public abstract class TwitterBaseFragment extends Fragment implements TweetAdapter.IProfileImageClickListener {
+public abstract class TwitterBaseFragment extends Fragment implements
+        TweetAdapter.IActionClickListener {
+    private static final int REQUEST_CODE = 10;
+
     protected ListView lvList;
     protected List<Tweet> tweetList;
     protected SwipeRefreshLayout swipeContainer;
     protected TweetAdapter tweetAdapter;
     protected int fragmentId;
     protected ProgressBar pb;
+
+    private Tweet tweet;
+
     public TwitterBaseFragment() {
         // Required empty public constructor
     }
@@ -48,7 +55,7 @@ public abstract class TwitterBaseFragment extends Fragment implements TweetAdapt
         // Inflate the layout for this fragment
         View view = inflater.inflate(fragmentId, container, false);
 
-        lvList = (ListView) view.findViewById(R.id.lvList) ;
+        lvList = (ListView) view.findViewById(R.id.lvList);
 
         tweetList = new ArrayList<>();
         tweetAdapter = new TweetAdapter(getActivity(), tweetList, this);
@@ -60,7 +67,7 @@ public abstract class TwitterBaseFragment extends Fragment implements TweetAdapt
 
             }
         });
-        View footerView =  inflater.inflate(R.layout.footer_layout, null, false);
+        View footerView = inflater.inflate(R.layout.footer_layout, null, false);
         lvList.addFooterView(footerView);
         pb = (ProgressBar) footerView.findViewById(R.id.pbLoading);
         pb.setVisibility(ProgressBar.INVISIBLE);
@@ -76,37 +83,38 @@ public abstract class TwitterBaseFragment extends Fragment implements TweetAdapt
                 android.R.color.holo_green_light,
                 android.R.color.holo_orange_light,
                 android.R.color.holo_red_light);
-        if(!Utils.isNetworkAvailable(getActivity())){
+        if (!Utils.isNetworkAvailable(getActivity())) {
             getCachedTweets();
-        }
-        else {
+        } else {
             getNewerList();
 
-            if(TwitterApplication.getCurrentUser().getUser()== null) {
+            if (TwitterApplication.getCurrentUser().getUser() == null) {
                 TwitterApplication.getCurrentUser().requestCurrentUser();
             }
         }
         return view;
     }
 
-    protected abstract void getCachedTweets() ;
+    protected abstract void getCachedTweets();
+
     protected long currentId = 1;
-    protected void getNewerList(){
+
+    protected void getNewerList() {
         currentId = 1;
         if (tweetList != null && tweetList.size() > 0) {
             currentId = tweetList.get(0).getUid();
         }
-        
+
     }
 
-    protected void getOlderList(){
+    protected void getOlderList() {
         currentId = 1;
         if (tweetList != null && tweetList.size() > 0) {
             int index = tweetList.size() - 1;
             currentId = tweetList.get(index).getUid();
         }
         pb.setVisibility(View.VISIBLE);
-        
+
     }
 
 
@@ -120,11 +128,11 @@ public abstract class TwitterBaseFragment extends Fragment implements TweetAdapt
 
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-              
+
                 if (response != null) {
                     try {
                         JSONArray jsonArray = response.getJSONArray("statuses");
-                        if(jsonArray != null && jsonArray.length() >0){
+                        if (jsonArray != null && jsonArray.length() > 0) {
                             updateDataSet(jsonArray);
                         }
                     } catch (JSONException e) {
@@ -135,11 +143,33 @@ public abstract class TwitterBaseFragment extends Fragment implements TweetAdapt
         };
     }
 
+    protected JsonHttpResponseHandler getActionJsonHttpResponseHandler() {
+        return new TwitterJsonHttpResponseHandler(getActivity()) {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                Log.d(TwitterJsonHttpResponseHandler.class.getSimpleName(), "succeed " + statusCode);
+                switch (action){
+                    case TweetAdapter.ACTION_FAVORITE:
+                        int favoriteCount = tweet.getFavouritesCount();
+                        tweet.setFavouritesCount(tweet.getFavorited()? favoriteCount - 1 : favoriteCount + 1);
+                        tweet.setFavorited(!tweet.getFavorited());
+                        break;
+                    case TweetAdapter.ACTION_RETWEET:
+                        tweet.setRetweeted(true);
+                        tweet.setRetweetCount(tweet.getRetweetCount()+1);
+                        break;
+                }
+                tweet.save();
+                tweetAdapter.notifyDataSetChanged();
+            }
+        };
+    }
+
     private void updateDataSet(JSONArray response) {
         if (swipeContainer.isRefreshing()) {
             swipeContainer.setRefreshing(false);
         }
-        if(pb.getVisibility() == View.VISIBLE){
+        if (pb.getVisibility() == View.VISIBLE) {
             pb.setVisibility(View.INVISIBLE);
         }
         if (response != null && response.length() > 0) {
@@ -148,15 +178,48 @@ public abstract class TwitterBaseFragment extends Fragment implements TweetAdapt
         }
     }
 
+    
+    private String action;
     @Override
-    public void onClicked(Long userId) {
-        launchProfile(userId);
+    public void onActionClicked(int position, String action) {
+        this.tweet = tweetList.get(position);
+        this.action = action;
+        switch (this.action) {
+            case TweetAdapter.ACTION_REPLY:
+                launchCompose(tweet.getUid(), tweet.getUser().getScreenName());
+                break;
+            case TweetAdapter.ACTION_RETWEET:
+                TwitterApplication.getRestClient().retweet(tweet.getUid(), getActionJsonHttpResponseHandler());
+                break;
+            case TweetAdapter.ACTION_FAVORITE:
+                if (tweet.getFavorited()) {
+                    TwitterApplication.getRestClient().unfavorite(tweet.getUid(), getActionJsonHttpResponseHandler());
+                } else {
+                    TwitterApplication.getRestClient().favorite(tweet.getUid(), getActionJsonHttpResponseHandler());
+                }
+                break;
+        }
     }
 
-    private void launchProfile(Long userId) {
-        Intent intent = new Intent(getActivity(), ProfileActivity.class);
-        intent.putExtra("userId", userId == 0 ?  TwitterClient.CURRENT_USER_ID :userId);
-        startActivity(intent);
+
+    public void launchCompose(long uid, String screenName) {
+        Intent intent = new Intent(getActivity(), ComposeActivity.class);
+        intent.putExtra("tweetId", uid);
+        intent.putExtra("screenName",  screenName);
+        startActivityForResult(intent, REQUEST_CODE);
+
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        // Check which request we're responding to
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_CODE  && resultCode == Activity.RESULT_OK) {
+            Tweet tweet = data.getParcelableExtra("tweet");
+            if(tweet != null ) {
+               tweetList.add(0, tweet);
+                tweetAdapter.notifyDataSetChanged();
+            }
+        }
+    }
 }

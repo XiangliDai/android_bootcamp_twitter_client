@@ -6,6 +6,7 @@ import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.EditText;
@@ -29,6 +30,7 @@ public class ComposeActivity extends ActionBarActivity {
     TextView tvScreeName;
 
     TextView toolbar_text;
+    Long tweetId;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,8 +45,14 @@ public class ComposeActivity extends ActionBarActivity {
         actionBar.setTitle("");
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setDefaultDisplayHomeAsUpEnabled(true);
+        tweetId = getIntent().getLongExtra("tweetId", 0);
+        String screenName = getIntent().getStringExtra("screenName");
 
         editText = (EditText) findViewById(R.id.etBody);
+        if(screenName!=null && !screenName.isEmpty()){
+            editText.setText(screenName + " ");
+        }
+        editText.setSelection(editText.getText().length());
         editText.addTextChangedListener(new TextWatcher() {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
@@ -70,7 +78,7 @@ public class ComposeActivity extends ActionBarActivity {
         if(currentUser!= null) {
             Picasso.with(this).load(currentUser.getProfileImageUrl()).into(ivProfile);
 
-            tvScreeName.setText("@" + currentUser.getScreenName());
+            tvScreeName.setText(currentUser.getScreenName());
             tvUserName.setText(currentUser.getName());
         }
     }
@@ -100,12 +108,12 @@ public class ComposeActivity extends ActionBarActivity {
     }
 
     private void postTweet() {
-        TwitterApplication.getRestClient().postStatus(editText.getText().toString(), new TwitterJsonHttpResponseHandler(this) {
+        TwitterApplication.getRestClient().postStatus(editText.getText().toString(), tweetId, new TwitterJsonHttpResponseHandler(this) {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 if (response != null && response.length() > 0) {
                     Tweet tweet = Tweet.fromJson(response);
-
+                    Log.d(ComposeActivity.class.getSimpleName(), "tweet retweet count: " + tweet.getRetweetCount());
                     Intent returnIntent = new Intent();
                     returnIntent.putExtra("tweet", tweet);
                     setResult(RESULT_OK, returnIntent);

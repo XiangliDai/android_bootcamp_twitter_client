@@ -29,7 +29,7 @@ public class TwitterClient extends OAuthBaseClient {
 	public static final String REST_CONSUMER_KEY = "VrKKVOeZiD1hxhnhVetZ7TiKD";       // Change this
 	public static final String REST_CONSUMER_SECRET = "UzX5hhwvsHHku3gMebcjC4InG565h8Exg6lgsO0zkEpConWBEI"; // Change this
 	public static final String REST_CALLBACK_URL = "oauth://cpsimpletweets"; // Change this (here and in manifest)
-    public static final Long CURRENT_USER_ID = Long.valueOf(165651913);
+    public static final Long CURRENT_USER_ID = 3051344827L; // Long.valueOf(165651913);
     public static int COUNT_PER_CALL = 25;
 	public TwitterClient(Context context) {
 		super(context, REST_API_CLASS, REST_URL, REST_CONSUMER_KEY, REST_CONSUMER_SECRET, REST_CALLBACK_URL);
@@ -70,11 +70,14 @@ public class TwitterClient extends OAuthBaseClient {
         
     }
     
-    public void postStatus(String status, ResponseHandlerInterface handler){
+    public void postStatus(String status, Long tweetId, ResponseHandlerInterface handler){
         String apiUrl = getApiUrl("statuses/update.json");
         // Can specify query string params directly or through RequestParams.
         RequestParams params = new RequestParams();
         params.put("status", status);
+        if(tweetId!=0) {
+            params.put("in_reply_to_status_id", tweetId);
+        }
         client.post(apiUrl, params, handler);
     }
     
@@ -140,6 +143,32 @@ public class TwitterClient extends OAuthBaseClient {
         params.put("count", COUNT_PER_CALL);
         params.put("max_id", maxId);
         client.get(apiUrl, params, handler);
+
+    }
+    
+    public void retweet(Long id, AsyncHttpResponseHandler handler){
+        String url = String.format("statuses/retweet/%d.json", id);
+        String apiUrl = getApiUrl(url);
+        // Can specify query string params directly or through RequestParams.
+        RequestParams params = new RequestParams();
+        params.put("id", id);
+        client.post(apiUrl, params, handler);
+    }
+
+    public void favorite(Long id, AsyncHttpResponseHandler handler){
+        String apiUrl = getApiUrl("favorites/create.json");
+        // Can specify query string params directly or through RequestParams.
+        RequestParams params = new RequestParams();
+        params.put("id", id);
+        client.post(apiUrl, params, handler);
+    }
+
+    public void unfavorite(Long id, AsyncHttpResponseHandler handler){
+        String apiUrl = getApiUrl("favorites/destroy.json");
+        // Can specify query string params directly or through RequestParams.
+        RequestParams params = new RequestParams();
+        params.put("id", id);
+        client.post(apiUrl, params, handler);
 
     }
 	/* 1. Define the endpoint URL with getApiUrl and pass a relative path to the endpoint

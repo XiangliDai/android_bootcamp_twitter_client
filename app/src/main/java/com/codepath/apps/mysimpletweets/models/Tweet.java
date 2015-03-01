@@ -2,6 +2,7 @@ package com.codepath.apps.mysimpletweets.models;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.Log;
 
 import com.activeandroid.ActiveAndroid;
 import com.activeandroid.Model;
@@ -27,13 +28,43 @@ public class Tweet extends Model implements Parcelable{
     private String createdAt;
     @Column(name = "user", onUpdate = Column.ForeignKeyAction.CASCADE, onDelete = Column.ForeignKeyAction.CASCADE)
     private User user;
+
     @Column(name = "favourites_count")
     private int favouritesCount;
     @Column(name = "retweet_count")
     private int retweetCount;
     @Column(name = "retween_name")
     private String retweenName;
-    
+    @Column(name = "retweeted")
+    private boolean retweeted;
+    @Column(name = "favorited")
+    private boolean favorited;
+
+    public void setFavouritesCount(int favouritesCount) {
+        this.favouritesCount = favouritesCount;
+    }
+
+    public void setRetweetCount(int retweetCount) {
+        this.retweetCount = retweetCount;
+    }
+
+
+    public void setRetweeted(boolean retweeted) {
+        this.retweeted = retweeted;
+    }
+
+    public void setFavorited(boolean favorited) {
+        this.favorited = favorited;
+    }
+
+    public boolean getRetweeted() {
+        return retweeted;
+    }
+
+    public boolean getFavorited() {
+        return favorited;
+    }
+
     public User getUser() {
         return user;
     }
@@ -74,22 +105,25 @@ public class Tweet extends Model implements Parcelable{
             tweet.uid = jsonObject.has("id") ? jsonObject.getLong("id") : 0;
            
             tweet.retweetCount = jsonObject.has("retweet_count") ? jsonObject.getInt("retweet_count") : 0;
-            tweet.favouritesCount = jsonObject.has("favourites_count") ? jsonObject.getInt("favourites_count") : 0;
+            tweet.favouritesCount = jsonObject.has("favorite_count") ? jsonObject.getInt("favorite_count") : 0;
             User tUser = jsonObject.has("user") ? User.fromJson(jsonObject.getJSONObject("user")) : null;
             if(jsonObject.has("retweeted_status")) {
                 JSONObject retweetJson = jsonObject.getJSONObject("retweeted_status");
                 tweet.createdAt = retweetJson.has("created_at") ? Utils.getRelativeTimeString(retweetJson.getString("created_at")) : "";
                 tweet.user = retweetJson.has("user") ? User.fromJson(retweetJson.getJSONObject("user")) : null;              
                 tweet.retweenName =  tUser == null ? "" : tUser.getName();
-                String regex = "RT @" + tweet.user.getScreenName() + ": " ;
+                String regex = "RT " + tweet.user.getScreenName() + ": " ;
                 tweet.body = Pattern.compile(regex).matcher(tweet.body).replaceFirst("");
             }
             else{
                 tweet.createdAt = jsonObject.has("created_at") ? Utils.getRelativeTimeString(jsonObject.getString("created_at")) : "";
                 tweet.user =  tUser ;
             }
+            tweet.retweeted = jsonObject.has("retweeted")? jsonObject.getBoolean("retweeted") : false;
+            tweet.favorited = jsonObject.has("favorited")? jsonObject.getBoolean("favorited") : false;
+            Log.d(Tweet.class.getSimpleName(), "tweet retweet count: " + tweet.getRetweetCount());
 
-              tweet.save();
+            tweet.save();
         } catch (JSONException e) {
             e.printStackTrace();
             return null;
@@ -139,6 +173,8 @@ public class Tweet extends Model implements Parcelable{
         dest.writeInt(retweetCount);
         dest.writeInt(favouritesCount);
         dest.writeString(retweenName);
+        dest.writeByte((byte) (retweeted ? 1 : 0));
+        dest.writeByte((byte) (favorited ? 1 : 0));
         dest.writeParcelable(user, i);
     }
 
@@ -149,6 +185,8 @@ public class Tweet extends Model implements Parcelable{
         retweetCount = in.readInt();
         favouritesCount = in.readInt();
         retweenName = in.readString();
+        retweeted = in.readByte() != 0;
+        favorited = in.readByte() != 0;
         user = in.readParcelable(User.class.getClassLoader());
     }
 

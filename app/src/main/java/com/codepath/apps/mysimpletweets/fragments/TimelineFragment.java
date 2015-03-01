@@ -6,8 +6,6 @@ import com.codepath.apps.mysimpletweets.R;
 import com.codepath.apps.mysimpletweets.TwitterApplication;
 import com.codepath.apps.mysimpletweets.models.Tweet;
 
-import java.util.ArrayList;
-
 public class TimelineFragment extends TwitterBaseFragment{
 
     public static TimelineFragment newInstance() {
@@ -44,14 +42,5 @@ public class TimelineFragment extends TwitterBaseFragment{
         tweetAdapter.notifyDataSetChanged();
     }
 
-    public void updateList(Tweet tweet) {
-        // Check which request we're responding to
-
-            if(tweet != null ){
-                if(tweetList == null) tweetList = new ArrayList<>();
-                tweetList.add(0 ,tweet);
-                tweetAdapter.notifyDataSetChanged();
-            }
-        }
 
 }

@@ -102,7 +102,7 @@ public class ProfileFragment extends TwitterBaseFragment {
                     User user = User.fromJson(response);
                     
                     tvUserName.setText(user.getName());
-                    tvScreenName.setText("@" + user.getScreenName());
+                    tvScreenName.setText(user.getScreenName());
                     tvFollowerCount.setText(user.getFollowersCount()+"");
                     tvFollowingCount.setText(user.getFriendsCount()+"");
                     tvTweetsCount.setText(user.getStatusesCount()+"");
@@ -115,11 +115,6 @@ public class ProfileFragment extends TwitterBaseFragment {
                 }
             }
         };
-    }
-    
-    @Override
-    public void onClicked(Long userId) {
-       return;
     }
 
    

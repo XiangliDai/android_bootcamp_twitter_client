@@ -16,6 +16,7 @@ public class TwitterJsonHttpResponseHandler extends JsonHttpResponseHandler {
     public TwitterJsonHttpResponseHandler(Context context){
         this.context = context;
     }
+    @Override
     public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject
             errorResponse) {
         Log.e(TwitterJsonHttpResponseHandler.class.getSimpleName(), "failed " + statusCode);
@@ -30,5 +31,11 @@ public class TwitterJsonHttpResponseHandler extends JsonHttpResponseHandler {
         } catch (JSONException e) {
             e.printStackTrace();
         }
+    }
+    @Override
+    public void onFailure(int statusCode, Header[] headers, String message, Throwable throwable) {
+        Log.e(TwitterJsonHttpResponseHandler.class.getSimpleName(), "failed " + statusCode);
+        Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
+       
     }
 }

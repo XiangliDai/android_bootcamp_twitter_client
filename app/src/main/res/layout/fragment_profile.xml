@@ -76,12 +76,20 @@
                 <TextView
                     android:id="@+id/tvTweetsCount"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:fontFamily="sans-serif"
+                    android:textColor="@color/neutral"
+                    android:textSize="12sp"
+                    android:textStyle="bold"/>
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Tweets" />
+                    android:text="Tweets" 
+                    android:textAllCaps="true"
+                    android:fontFamily="sans-serif"
+                    android:textColor="@color/neutral"
+                    android:textSize="12sp" />
 
             </LinearLayout>
 
@@ -102,12 +110,21 @@
                 <TextView
                     android:id="@+id/tvFollowingCount"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:fontFamily="sans-serif"
+                    android:textColor="@color/neutral"
+                    android:textSize="12sp"
+                    android:textStyle="bold"
+                    />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Following" />
+                    android:text="Following"
+                    android:textAllCaps="true"
+                    android:fontFamily="sans-serif"
+                    android:textColor="@color/neutral"
+                    android:textSize="12sp" />
 
             </LinearLayout>
 
@@ -129,12 +146,20 @@
                 <TextView
                     android:id="@+id/tvFollowerCount"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:fontFamily="sans-serif"
+                    android:textColor="@color/neutral"
+                    android:textSize="12sp"
+                    android:textStyle="bold"/>
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Follower" />
+                    android:text="Follower"
+                    android:textAllCaps="true"
+                    android:fontFamily="sans-serif"
+                    android:textColor="@color/neutral"
+                    android:textSize="12sp"/>
 
             </LinearLayout>
 
