@@ -21,6 +21,7 @@ import com.codepath.apps.mysimpletweets.activities.ComposeActivity;
 import com.codepath.apps.mysimpletweets.activities.TimelineActivity;
 import com.codepath.apps.mysimpletweets.adapters.TweetAdapter;
 import com.codepath.apps.mysimpletweets.models.Tweet;
+import com.codepath.apps.mysimpletweets.net.TwitterClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
 
 import org.apache.http.Header;
@@ -42,9 +43,9 @@ public abstract class TwitterBaseFragment extends Fragment implements
     protected TweetAdapter tweetAdapter;
     protected int fragmentId;
     protected ProgressBar pb;
-
+    protected String direction;
     private Tweet tweet;
-
+    private boolean isNewer;
     public TwitterBaseFragment() {
         // Required empty public constructor
     }
@@ -103,7 +104,7 @@ public abstract class TwitterBaseFragment extends Fragment implements
         if (tweetList != null && tweetList.size() > 0) {
             currentId = tweetList.get(0).getUid();
         }
-
+       isNewer = true;
     }
 
     protected void getOlderList() {
@@ -113,7 +114,7 @@ public abstract class TwitterBaseFragment extends Fragment implements
             currentId = tweetList.get(index).getUid();
         }
         pb.setVisibility(View.VISIBLE);
-
+        isNewer = false;
     }
 
 
@@ -147,13 +148,14 @@ public abstract class TwitterBaseFragment extends Fragment implements
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 Log.d(TwitterJsonHttpResponseHandler.class.getSimpleName(), "succeed " + statusCode);
-                switch (action){
+                Tweet tweetResponse = Tweet.fromJson(response);
+                 switch (action){
                     case TweetAdapter.ACTION_FAVORITE:
-                        int favoriteCount = tweet.getFavouritesCount();
-                        tweet.setFavouritesCount(tweet.getFavorited()? favoriteCount - 1 : favoriteCount + 1);
-                        tweet.setFavorited(!tweet.getFavorited());
+                        tweet.setFavouritesCount(tweetResponse.getFavouritesCount());
+                        tweet.setFavorited(tweetResponse.getFavorited());
                         break;
                     case TweetAdapter.ACTION_RETWEET:
+                        tweetList.add(0, tweetResponse);
                         tweet.setRetweeted(true);
                         tweet.setRetweetCount(tweet.getRetweetCount()+1);
                         break;
@@ -172,7 +174,12 @@ public abstract class TwitterBaseFragment extends Fragment implements
             pb.setVisibility(View.INVISIBLE);
         }
         if (response != null && response.length() > 0) {
-            tweetList.addAll(Tweet.fromJsonArray(response));
+            ArrayList<Tweet> tweets = Tweet.fromJsonArray(response);
+            if(isNewer){
+                tweetList.addAll(0, tweets);
+            }else {
+                tweetList.addAll(tweets);
+            }
             tweetAdapter.notifyDataSetChanged();
         }
     }

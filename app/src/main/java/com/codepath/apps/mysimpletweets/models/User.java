@@ -14,7 +14,7 @@ import org.json.JSONObject;
 public class User extends Model implements Parcelable {
     @Column(name = "name")
     private String name;
-    @Column(name = "uid")
+    @Column(name = "uid", index = true)
     private Long uid;
     @Column(name = "screen_name")
     private String screenName;

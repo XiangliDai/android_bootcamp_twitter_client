@@ -22,7 +22,7 @@ import java.util.regex.Pattern;
 public class Tweet extends Model implements Parcelable{
     @Column(name = "body")
     private String body;
-    @Column(name = "uid")
+    @Column(name = "uid", index = true)
     private long uid;
     @Column(name = "created_at")
     private String createdAt;

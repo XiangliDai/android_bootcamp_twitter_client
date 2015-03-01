@@ -29,7 +29,7 @@ public class TwitterClient extends OAuthBaseClient {
 	public static final String REST_CONSUMER_KEY = "VrKKVOeZiD1hxhnhVetZ7TiKD";       // Change this
 	public static final String REST_CONSUMER_SECRET = "UzX5hhwvsHHku3gMebcjC4InG565h8Exg6lgsO0zkEpConWBEI"; // Change this
 	public static final String REST_CALLBACK_URL = "oauth://cpsimpletweets"; // Change this (here and in manifest)
-    public static final Long CURRENT_USER_ID = 3051344827L; // Long.valueOf(165651913);
+    public static final Long CURRENT_USER_ID = 165651913L;//3051344827L; // Long.valueOf(165651913);
     public static int COUNT_PER_CALL = 25;
 	public TwitterClient(Context context) {
 		super(context, REST_API_CLASS, REST_URL, REST_CONSUMER_KEY, REST_CONSUMER_SECRET, REST_CALLBACK_URL);
